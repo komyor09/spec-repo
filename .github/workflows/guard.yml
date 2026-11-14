@@ -1,0 +1,25 @@
+name: guard
+# pull_request_target запускает проверку из master, поэтому студент
+# не может отключить её, изменив workflow в своей ветке.
+on:
+  pull_request_target:
+    branches: [master]
+
+permissions:
+  contents: read
+
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0          # код из master (доверенный)
+      - name: Fetch PR head (только для diff, код не запускается)
+        run: git fetch origin pull/${{ github.event.pull_request.number }}/head:pr
+      - name: Check folder access
+        run: |
+          bash scripts/guard.sh \
+            "${{ github.event.pull_request.user.login }}" \
+            "${{ github.event.pull_request.head.ref }}" \
+            "origin/master" "pr"
