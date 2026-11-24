@@ -1,0 +1,6 @@
+{
+  "name": "ВетМед — Ветеринарная клиника",
+  "description": "Система управления ветеринарной клиникой: учет пациентов, история болезни, запись на прием, база лекарств, личный кабинет владельца и исходный код проекта на C# (.NET 8 + EF Core).",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
