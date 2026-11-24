@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>AutoService.Domain</RootNamespace>
+  </PropertyGroup>
+
+  <!-- Слой домена ни от чего не зависит: нет ссылок на EF Core, WinForms и другие проекты -->
+
+</Project>
