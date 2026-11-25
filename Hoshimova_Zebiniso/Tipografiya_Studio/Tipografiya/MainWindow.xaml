@@ -1,0 +1,217 @@
+<Window x:Class="Tipografiya.MainWindow"
+ xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+ xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+ Title="Типография · Заказы на печать" Width="1150" Height="720"
+ MinWidth="750" MinHeight="525" WindowStartupLocation="CenterScreen" Language="ru-RU"
+ FontFamily="Segoe UI" FontSize="14" Background="{StaticResource Paper}">
+ <Window.Resources>
+    <Style x:Key="Nav" TargetType="RadioButton">
+        <Setter Property="GroupName" Value="Sections"/>
+        <Setter Property="Foreground" Value="#E1EAE3"/>
+        <Setter Property="Margin" Value="0,2"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="RadioButton">
+                    <Border x:Name="Tile" Background="Transparent" CornerRadius="8"
+                            BorderThickness="1" BorderBrush="Transparent" Padding="11,10">
+                        <DockPanel>
+                            <TextBlock Text="{TemplateBinding Tag}" FontFamily="Segoe MDL2 Assets"
+                                       FontSize="17" Width="24" VerticalAlignment="Center"/>
+                            <ContentPresenter Margin="8,0,0,0" VerticalAlignment="Center"/>
+                        </DockPanel>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="Tile" Property="Background" Value="#30463B"/></Trigger>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="Tile" Property="Background" Value="#D8F2B6"/>
+                            <Setter Property="Foreground" Value="#193526"/>
+                            <Setter Property="FontWeight" Value="SemiBold"/>
+                        </Trigger>
+                        <Trigger Property="IsKeyboardFocused" Value="True"><Setter TargetName="Tile" Property="BorderBrush" Value="White"/></Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style x:Key="Pill" TargetType="Border">
+        <Setter Property="Background" Value="#E8EFE7"/>
+        <Setter Property="Padding" Value="8,3"/>
+        <Setter Property="CornerRadius" Value="10"/>
+        <Setter Property="HorizontalAlignment" Value="Left"/>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Status}" Value="В печати"><Setter Property="Background" Value="#E6E4F7"/></DataTrigger>
+            <DataTrigger Binding="{Binding Status}" Value="Готов"><Setter Property="Background" Value="#D9EDD2"/></DataTrigger>
+            <DataTrigger Binding="{Binding Status}" Value="Выдан"><Setter Property="Background" Value="#E4EBF1"/></DataTrigger>
+            <DataTrigger Binding="{Binding Status}" Value="Отменён"><Setter Property="Background" Value="#FAE2DC"/></DataTrigger>
+        </Style.Triggers>
+    </Style>
+    <Style x:Key="Action" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+        <Setter Property="Margin" Value="0,0,6,4"/>
+    </Style>
+ </Window.Resources>
+ <Grid>
+    <Grid.ColumnDefinitions><ColumnDefinition x:Name="RailWidth" Width="198"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+    <Border Background="{StaticResource Rail}" Padding="10,20,10,14">
+        <DockPanel>
+            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="6,0,0,30">
+                <Viewbox Width="36" Height="36" AutomationProperties.Name="Знак типографии">
+                    <Canvas Width="36" Height="36">
+                        <Rectangle Canvas.Left="2" Canvas.Top="9" Width="19" Height="23" Fill="#94BCA6"/>
+                        <Rectangle Canvas.Left="8" Canvas.Top="5" Width="19" Height="23" Fill="#C4EB93"/>
+                        <Rectangle Canvas.Left="14" Canvas.Top="1" Width="19" Height="23" Fill="#FAFBED"/>
+                        <Path Stroke="#193526" StrokeThickness="1.5" Data="M17,8 H29 M17,12 H29 M17,16 H25"/>
+                    </Canvas>
+                </Viewbox>
+                <TextBlock x:Name="Brand" Text="Типография" Foreground="White" Margin="8,0,0,0"
+                           FontSize="20" FontFamily="Georgia" VerticalAlignment="Center"/>
+            </StackPanel>
+            <StackPanel DockPanel.Dock="Top">
+                <RadioButton x:Name="NavOrders" Style="{StaticResource Nav}" Tag="&#xE8FD;" ToolTip="Журнал заказов" AutomationProperties.Name="Журнал заказов" Checked="Navigate">
+                    <TextBlock x:Name="NavOrdersLabel" Text="Заказы"/>
+                </RadioButton>
+                <RadioButton x:Name="NavClients" Style="{StaticResource Nav}" Tag="&#xE716;" ToolTip="Клиенты" AutomationProperties.Name="Клиенты" Checked="Navigate">
+                    <TextBlock x:Name="NavClientsLabel" Text="Клиенты"/>
+                </RadioButton>
+                <RadioButton x:Name="NavPrices" Style="{StaticResource Nav}" Tag="&#xE8EC;" ToolTip="Тарифы" AutomationProperties.Name="Тарифы" Checked="Navigate">
+                    <TextBlock x:Name="NavPricesLabel" Text="Тарифы"/>
+                </RadioButton>
+            </StackPanel>
+            <Border/>
+        </DockPanel>
+    </Border>
+    <Grid Grid.Column="1" Margin="16,14">
+        <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+        <DockPanel Margin="0,0,0,12">
+            <Button DockPanel.Dock="Right" x:Name="MainAction" Style="{StaticResource Primary}"
+                    VerticalAlignment="Center" Click="PrimaryClick"/>
+            <TextBlock x:Name="PageTitle" Style="{StaticResource Title}" VerticalAlignment="Center"/>
+        </DockPanel>
+        <TabControl Grid.Row="1" x:Name="Sections" BorderThickness="0" Background="Transparent">
+            <TabControl.Template>
+                <ControlTemplate TargetType="TabControl">
+                    <ContentPresenter x:Name="PART_SelectedContentHost" ContentSource="SelectedContent"/>
+                </ControlTemplate>
+            </TabControl.Template>
+            <TabItem x:Name="JournalTab">
+                <Grid>
+                    <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+                    <UniformGrid x:Name="Metrics" Columns="3" Margin="0,0,0,10">
+                        <Border Style="{StaticResource Card}" Background="#E7EFDE" BorderBrush="#D9E4CE" Padding="13,6" Margin="0,0,4,0">
+                            <StackPanel><TextBlock Text="Приняты" Style="{StaticResource Caption}"/>
+                                <TextBlock x:Name="AcceptedCount" FontFamily="Georgia" FontSize="26"/></StackPanel>
+                        </Border>
+                        <Border Style="{StaticResource Card}" Background="#ECEAF6" BorderBrush="#DEDBEA" Padding="13,6" Margin="4,0">
+                            <StackPanel><TextBlock Text="В печати" Style="{StaticResource Caption}"/>
+                                <TextBlock x:Name="PrintingCount" FontFamily="Georgia" FontSize="26"/></StackPanel>
+                        </Border>
+                        <Border Style="{StaticResource Card}" Background="#F6EEE2" BorderBrush="#E9DFD1" Padding="13,6" Margin="4,0,0,0">
+                            <StackPanel><TextBlock Text="Просрочены" Style="{StaticResource Caption}"/>
+                                <TextBlock x:Name="LateCount" FontFamily="Georgia" FontSize="26"/></StackPanel>
+                        </Border>
+                    </UniformGrid>
+                    <Grid Grid.Row="1" Margin="0,0,0,10">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="1.4*"/><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                        <StackPanel Margin="0,0,8,0"><TextBlock Style="{StaticResource Caption}" Text="Номер или клиент"/>
+                            <TextBox x:Name="OrderSearch" AutomationProperties.Name="Номер или клиент" TextChanged="FilterChanged"/></StackPanel>
+                        <StackPanel Grid.Column="1" Margin="0,0,8,0"><TextBlock Style="{StaticResource Caption}" Text="Состояние"/>
+                            <ComboBox x:Name="StatusFilter" AutomationProperties.Name="Состояние" SelectionChanged="FilterChanged"/></StackPanel>
+                        <StackPanel Grid.Column="2"><TextBlock Style="{StaticResource Caption}" Text="Срок"/>
+                            <ComboBox x:Name="DueFilter" AutomationProperties.Name="Срок" SelectionChanged="FilterChanged"/></StackPanel>
+                        <Button Grid.Column="3" VerticalAlignment="Bottom" Content="Сбросить" Margin="4,0,0,0" Style="{StaticResource Quiet}" Click="ResetFilters"/>
+                    </Grid>
+                    <Border Grid.Row="2" Style="{StaticResource Card}" Padding="9">
+                        <DockPanel>
+                            <TextBlock DockPanel.Dock="Top" x:Name="JournalInfo" Foreground="{StaticResource Muted}" Margin="3,0,0,7" TextWrapping="Wrap"/>
+                            <WrapPanel DockPanel.Dock="Bottom" Margin="0,8,0,0">
+                                <Button x:Name="OpenButton" Content="Карточка" Style="{StaticResource Action}" Click="OpenOrder"/>
+                                <Button x:Name="NextButton" Content="Передать в печать" Style="{StaticResource Action}" Click="AdvanceOrder"/>
+                                <Button x:Name="BlankButton" Content="Бланк" Style="{StaticResource Action}" Click="ShowBlank"/>
+                                <Button x:Name="DeleteOrderButton" Content="Удалить" IsEnabled="False"
+                                        Style="{StaticResource Danger}" ToolTip="Удалить выбранный заказ и его историю" Click="DeleteOrder"/>
+                                <Button x:Name="CancelButton" Content="Отменить заказ" Style="{StaticResource Quiet}" Foreground="#944638" VerticalAlignment="Top" Click="CancelOrder"/>
+                            </WrapPanel>
+                            <Grid>
+                                <DataGrid x:Name="OrderGrid" SelectionChanged="OrderSelected" MouseDoubleClick="OrderDoubleClick">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="№" Width="48" Binding="{Binding Id}"/>
+                                        <DataGridTextColumn Header="Клиент" Width="*" MinWidth="120" Binding="{Binding CustomerName}"/>
+                                        <DataGridTemplateColumn Header="Срок" Width="100" SortMemberPath="Due">
+                                            <DataGridTemplateColumn.CellTemplate><DataTemplate><StackPanel>
+                                                <TextBlock Text="{Binding DueText}"/>
+                                                <TextBlock Text="{Binding DueMark}" Foreground="#963C31" FontSize="11">
+                                                    <TextBlock.Style><Style TargetType="TextBlock"><Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Overdue}" Value="False"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger>
+                                                    </Style.Triggers></Style></TextBlock.Style>
+                                                </TextBlock>
+                                            </StackPanel></DataTemplate></DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+                                        <DataGridTemplateColumn Header="Состояние" Width="110" SortMemberPath="Status">
+                                            <DataGridTemplateColumn.CellTemplate><DataTemplate>
+                                                <Border Style="{StaticResource Pill}"><TextBlock Text="{Binding Status}" FontSize="12" Foreground="#27382E"/></Border>
+                                            </DataTemplate></DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+                                        <DataGridTextColumn Header="Итого, сомони" Width="120" Binding="{Binding TotalText}" SortMemberPath="Total">
+                                            <DataGridTextColumn.ElementStyle><Style TargetType="TextBlock">
+                                                <Setter Property="TextAlignment" Value="Right"/><Setter Property="FontWeight" Value="SemiBold"/>
+                                            </Style></DataGridTextColumn.ElementStyle>
+                                        </DataGridTextColumn>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                                <TextBlock x:Name="EmptyTitle" FontSize="20" FontFamily="Georgia"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,30,0,0"/>
+                            </Grid>
+                        </DockPanel>
+                    </Border>
+                </Grid>
+            </TabItem>
+            <TabItem>
+                <DockPanel>
+                    <StackPanel DockPanel.Dock="Top" Margin="0,0,0,12"><TextBlock Style="{StaticResource Caption}" Text="Имя, организация или телефон"/>
+                        <TextBox x:Name="ClientSearch" MaxWidth="420" MinWidth="240" HorizontalAlignment="Left" AutomationProperties.Name="Поиск клиента" TextChanged="ClientFilterChanged"/>
+                    </StackPanel>
+                    <Border Style="{StaticResource Card}" Padding="9"><DockPanel>
+                        <WrapPanel DockPanel.Dock="Bottom" Margin="0,8,0,0">
+                            <Button x:Name="EditClientButton" Content="Изменить клиента" Style="{StaticResource Action}" Click="EditClient"/>
+                            <Button x:Name="ClientOrdersButton" Content="Заказы клиента" Style="{StaticResource Action}" Click="ShowClientOrders"/>
+                            <Button x:Name="DeleteClientButton" Content="Удалить клиента" IsEnabled="False"
+                                    Style="{StaticResource Danger}" Click="DeleteClient"/>
+                        </WrapPanel>
+                        <DataGrid x:Name="ClientGrid" SelectionChanged="ClientSelected">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="№" Width="58" Binding="{Binding Id}"/>
+                                <DataGridTextColumn Header="Имя или организация" Width="*" Binding="{Binding Name}"/>
+                                <DataGridTextColumn Header="Контактный телефон" Width="185" Binding="{Binding Phone}"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </DockPanel></Border>
+                </DockPanel>
+            </TabItem>
+            <TabItem>
+                <DockPanel>
+                    <Grid DockPanel.Dock="Top" Margin="0,0,0,10">
+                        <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                        <StackPanel><TextBlock Text="Поиск по названию тарифа" Style="{StaticResource Caption}"/>
+                            <TextBox x:Name="TariffSearch" AutomationProperties.Name="Поиск тарифа" TextChanged="TariffFilterChanged"/>
+                        </StackPanel>
+                    </Grid>
+                    <TextBlock x:Name="TariffCount" DockPanel.Dock="Bottom" Margin="0,8,0,0" Foreground="{StaticResource Muted}"/>
+                    <Border Style="{StaticResource Card}" Padding="9"><DockPanel>
+                        <WrapPanel DockPanel.Dock="Bottom" Margin="0,8,0,0">
+                            <Button x:Name="EditTariffButton" Content="Изменить тариф" IsEnabled="False"
+                                    Style="{StaticResource Action}" Click="EditPrices"/>
+                            <Button x:Name="DeleteTariffButton" Content="Удалить тариф" IsEnabled="False"
+                                    Style="{StaticResource Danger}" Click="DeleteTariff"/>
+                        </WrapPanel>
+                        <DataGrid x:Name="PriceGrid" SelectionChanged="PriceSelected"><DataGrid.Columns>
+                            <DataGridTextColumn Header="Услуга или вариант печати" Width="*" Binding="{Binding Name}"/>
+                            <DataGridTextColumn Header="Единица" Width="145" Binding="{Binding UnitText}"/>
+                            <DataGridTextColumn Header="Цена, сомони" Width="115" Binding="{Binding Price}" SortMemberPath="Rate"/>
+                        </DataGrid.Columns></DataGrid>
+                    </DockPanel></Border>
+                </DockPanel>
+            </TabItem>
+        </TabControl>
+    </Grid>
+ </Grid>
+</Window>
