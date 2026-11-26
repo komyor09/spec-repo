@@ -20,12 +20,12 @@ if [[ "$BRANCH" != "student/$FOLDER" ]]; then
 fi
 
 BAD=0
-while IFS= read -r f; do
+while IFS= read -r -d '' f; do
   [[ -z "$f" ]] && continue
   if [[ "$f" != "$FOLDER/"* ]]; then
     echo "❌ Чужой файл: $f"; BAD=1
   fi
-done < <(git diff --name-only "$BASE...$HEAD")
+done < <(git -c core.quotePath=false diff --name-only -z "$BASE...$HEAD")
 
 if [[ $BAD -eq 1 ]]; then
   echo "Можно менять только файлы в папке $FOLDER/"; exit 1
