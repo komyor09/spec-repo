@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/PrintShop.App/PrintShop.App.csproj" />
+    <Project Path="src/PrintShop.Core/PrintShop.Core.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/PrintShop.Tests/PrintShop.Tests.csproj" />
+  </Folder>
+</Solution>

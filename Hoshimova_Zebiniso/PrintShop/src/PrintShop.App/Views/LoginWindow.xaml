@@ -1,0 +1,30 @@
+<Window x:Class="PrintShop.App.Views.LoginWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Вход в систему — Типография"
+        Width="420" SizeToContent="Height" ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen" FontFamily="Segoe UI" FontSize="13"
+        Background="{StaticResource BackgroundBrush}"
+        FocusManager.FocusedElement="{Binding ElementName=LoginBox}">
+    <StackPanel>
+        <Border Background="{StaticResource SidebarBrush}" Padding="24,20">
+            <StackPanel>
+                <TextBlock Text="🖨 Типография" Foreground="White" FontSize="24" FontWeight="SemiBold"/>
+                <TextBlock Text="Учёт заказов на печать" Foreground="#AEBBCB" Margin="0,4,0,0"/>
+            </StackPanel>
+        </Border>
+        <StackPanel Margin="24,12,24,24">
+            <TextBlock Text="Логин" Style="{StaticResource FieldLabel}"/>
+            <TextBox x:Name="LoginBox"/>
+            <TextBlock Text="Пароль" Style="{StaticResource FieldLabel}"/>
+            <PasswordBox x:Name="PasswordBox"/>
+            <TextBlock x:Name="ErrorText" Foreground="#C0392B" Margin="0,10,0,0" TextWrapping="Wrap" Visibility="Collapsed"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,18,0,0">
+                <Button Content="Войти" IsDefault="True" Click="Login_Click" MinWidth="100"/>
+                <Button Content="Выход" IsCancel="True" Style="{StaticResource SecondaryButton}" Margin="0"/>
+            </StackPanel>
+            <TextBlock Margin="0,18,0,0" Foreground="#7A8796" FontSize="11" TextWrapping="Wrap"
+                       Text="Демо-учётные записи: admin/admin, manager/manager, printer/printer"/>
+        </StackPanel>
+    </StackPanel>
+</Window>

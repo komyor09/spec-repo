@@ -1,0 +1,41 @@
+<UserControl x:Class="PrintShop.App.Views.MaterialsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <DockPanel>
+        <TextBlock DockPanel.Dock="Top" Text="Материалы и складские остатки" Style="{StaticResource Header}"/>
+        <DockPanel DockPanel.Dock="Top" Margin="0,0,0,10">
+            <StackPanel Orientation="Horizontal" Visibility="{Binding CanEdit, Converter={StaticResource BoolToVis}}">
+                <Button Content="＋ Добавить" Command="{Binding AddCommand}" Style="{StaticResource AccentButton}"/>
+                <Button Content="✎ Изменить" Command="{Binding EditCommand}"/>
+                <Button Content="📥 Поступление" Command="{Binding ReceiveCommand}"/>
+                <Button Content="Удалить" Command="{Binding DeleteCommand}" Style="{StaticResource DangerButton}"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <CheckBox Content="Только ниже минимума" IsChecked="{Binding OnlyLow}" VerticalAlignment="Center" Margin="0,0,14,0"/>
+                <TextBlock Text="Поиск:" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                <TextBox Width="200" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged, Delay=300}"/>
+            </StackPanel>
+        </DockPanel>
+        <TextBlock DockPanel.Dock="Bottom" Text="{Binding LowStockInfo}" Foreground="#C0392B" Margin="0,8,0,0" TextWrapping="Wrap"/>
+        <DataGrid ItemsSource="{Binding Items}" SelectedItem="{Binding Selected}" MouseDoubleClick="Grid_DoubleClick">
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsBelowMinimum}" Value="True">
+                            <Setter Property="Background" Value="{StaticResource OverdueBrush}"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.RowStyle>
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Материал" Binding="{Binding Name}" Width="2*"/>
+                <DataGridTextColumn Header="Плотность, г/м²" Binding="{Binding Density}" Width="115"/>
+                <DataGridTextColumn Header="Формат" Binding="{Binding Format}" Width="80"/>
+                <DataGridTextColumn Header="Цена за ед., сом" Binding="{Binding Price, StringFormat=N2}" Width="120"/>
+                <DataGridTextColumn Header="Остаток" Binding="{Binding Quantity, StringFormat=0.##}" Width="90"/>
+                <DataGridTextColumn Header="Мин. запас" Binding="{Binding MinQuantity, StringFormat=0.##}" Width="90"/>
+                <DataGridTextColumn Header="Ед." Binding="{Binding Unit}" Width="60"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </DockPanel>
+</UserControl>
