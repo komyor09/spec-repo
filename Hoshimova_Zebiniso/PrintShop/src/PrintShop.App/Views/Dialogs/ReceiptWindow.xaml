@@ -1,0 +1,16 @@
+<Window x:Class="PrintShop.App.Views.Dialogs.ReceiptWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Квитанция" Width="700" Height="800"
+        WindowStartupLocation="CenterOwner" ShowInTaskbar="False"
+        FontFamily="Segoe UI" FontSize="13" Background="{StaticResource BackgroundBrush}">
+    <DockPanel Margin="12">
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+            <Button Content="🖨 Печать" Click="Print_Click" Style="{StaticResource AccentButton}"/>
+            <Button Content="Закрыть" IsCancel="True" Style="{StaticResource SecondaryButton}" Margin="0"/>
+        </StackPanel>
+        <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" Background="White">
+            <FlowDocumentScrollViewer x:Name="Viewer" VerticalScrollBarVisibility="Auto"/>
+        </Border>
+    </DockPanel>
+</Window>
