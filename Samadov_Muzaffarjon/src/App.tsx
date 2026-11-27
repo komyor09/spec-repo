@@ -10,13 +10,14 @@ import {
   PawPrint,
   Receipt,
   RotateCcw,
+  Search,
   Stethoscope,
   Syringe,
   UserCheck,
   Users,
   X,
 } from 'lucide-react';
-import {useCallback, useEffect, useState} from 'react';
+import {useCallback, useEffect, useMemo, useState} from 'react';
 import {AppointmentsView} from './components/AppointmentsView.tsx';
 import {InpatientView} from './components/InpatientView.tsx';
 import {LabView} from './components/LabView.tsx';
@@ -35,6 +36,10 @@ import {OwnersView} from './components/OwnersView.tsx';
 import {PatientsView} from './components/PatientsView.tsx';
 import {PharmacyView} from './components/PharmacyView.tsx';
 import {PetAvatar} from './components/PetAvatar.tsx';
+import {
+  PrintPreviewModal,
+  type PrintDocumentTarget,
+} from './components/PrintPreviewModal.tsx';
 import type {
   Appointment,
   AppointmentStatus,
@@ -95,6 +100,11 @@ export default function App() {
   const [showPatientModal, setShowPatientModal] = useState(false);
   const [showOwnerModal, setShowOwnerModal] = useState(false);
   const [showMedicationModal, setShowMedicationModal] = useState(false);
+  const [printTarget, setPrintTarget] = useState<PrintDocumentTarget | null>(
+    null,
+  );
+  const [globalSearch, setGlobalSearch] = useState('');
+  const [searchOpen, setSearchOpen] = useState(false);
 
   const fetchState = useCallback(async () => {
     try {
@@ -218,6 +228,8 @@ export default function App() {
     heartRateBpm: number;
     treatmentPlan: string;
     prescriptions: PrescriptionItem[];
+    createInvoice?: boolean;
+    consultationFeeRub?: number;
   }): Promise<string | null> => {
     const res = await fetch('/api/medical-records', {
       method: 'POST',
@@ -432,6 +444,40 @@ export default function App() {
   const primaryDoctor = state?.veterinarians[0];
   const currentOwner = state?.owners.find((o) => o.id === activeOwnerId);
 
+  const quickResults = useMemo(() => {
+    const q = globalSearch.trim().toLowerCase();
+    if (!q || !state) return {pets: [], owners: [], meds: []};
+    return {
+      pets: state.pets
+        .filter(
+          (p) =>
+            p.name.toLowerCase().includes(q) ||
+            p.breed.toLowerCase().includes(q) ||
+            p.microchipNumber.toLowerCase().includes(q),
+        )
+        .slice(0, 4),
+      owners: state.owners
+        .filter(
+          (o) =>
+            o.fullName.toLowerCase().includes(q) ||
+            o.phone.toLowerCase().includes(q),
+        )
+        .slice(0, 3),
+      meds: state.medications
+        .filter(
+          (m) =>
+            m.name.toLowerCase().includes(q) ||
+            m.activeIngredient.toLowerCase().includes(q),
+        )
+        .slice(0, 3),
+    };
+  }, [globalSearch, state]);
+
+  const hasQuickMatches =
+    quickResults.pets.length > 0 ||
+    quickResults.owners.length > 0 ||
+    quickResults.meds.length > 0;
+
   const sidebarContent = (
     <div className="flex flex-col h-full bg-slate-900 text-slate-100 border-r border-slate-800">
       <div className="h-16 px-6 flex items-center justify-between border-b border-slate-800">
@@ -623,48 +669,166 @@ export default function App() {
   );
 
   return (
-    <div className="min-h-screen flex bg-[#F4F7F9] text-slate-900">
-      <aside className="hidden lg:block w-64 shrink-0 sticky top-0 h-screen">
-        {sidebarContent}
-      </aside>
+    <>
+      <div
+        className={`min-h-screen flex bg-[#F4F7F9] text-slate-900 ${
+          printTarget ? 'print:hidden' : ''
+        }`}
+      >
+        <aside className="hidden lg:block w-64 shrink-0 sticky top-0 h-screen">
+          {sidebarContent}
+        </aside>
 
-      {mobileMenuOpen && (
-        <div className="fixed inset-0 z-50 lg:hidden flex">
-          <div className="w-64 h-full">{sidebarContent}</div>
-          <div
-            className="flex-1 bg-slate-900/50"
-            onClick={() => setMobileMenuOpen(false)}
-          />
-        </div>
-      )}
+        {mobileMenuOpen && (
+          <div className="fixed inset-0 z-50 lg:hidden flex">
+            <div className="w-64 h-full">{sidebarContent}</div>
+            <div
+              className="flex-1 bg-slate-900/50"
+              onClick={() => setMobileMenuOpen(false)}
+            />
+          </div>
+        )}
 
-      <div className="flex-1 flex flex-col min-w-0">
-        <header className="h-16 bg-white border-b border-slate-200 px-6 flex items-center justify-between gap-8 sticky top-0 z-30">
-          <div className="flex items-center gap-3 min-w-0">
-            <button
-              type="button"
-              onClick={() => setMobileMenuOpen(true)}
-              className="lg:hidden p-2 -ml-2 text-slate-600 hover:text-slate-900"
-              aria-label="Открыть навигацию"
-            >
-              <Menu size={20} />
-            </button>
-            <div className="text-sm font-medium text-slate-700 truncate">
-              {breadcrumbText}
+        <div className="flex-1 flex flex-col min-w-0">
+          <header className="h-16 bg-white border-b border-slate-200 px-6 flex items-center justify-between gap-8 sticky top-0 z-30">
+            <div className="flex items-center gap-3 min-w-0">
+              <button
+                type="button"
+                onClick={() => setMobileMenuOpen(true)}
+                className="lg:hidden p-2 -ml-2 text-slate-600 hover:text-slate-900"
+                aria-label="Открыть навигацию"
+              >
+                <Menu size={20} />
+              </button>
+              <div className="text-sm font-medium text-slate-700 truncate">
+                {breadcrumbText}
+              </div>
             </div>
-          </div>
 
-          <div className="shrink-0">
-            <button
-              type="button"
-              onClick={() => setAppointmentModalPetId(null)}
-              disabled={!state || state.pets.length === 0}
-              className="px-4 py-2 text-xs font-medium text-white bg-teal-700 rounded-lg hover:bg-teal-800 disabled:opacity-50 transition-colors whitespace-nowrap shrink-0"
-            >
-              Записать на прием
-            </button>
-          </div>
-        </header>
+            <div className="hidden md:block relative flex-1 max-w-sm">
+              <Search
+                size={15}
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
+              />
+              <input
+                type="text"
+                value={globalSearch}
+                onFocus={() => setSearchOpen(true)}
+                onBlur={() => setTimeout(() => setSearchOpen(false), 160)}
+                onChange={(e) => {
+                  setGlobalSearch(e.target.value);
+                  setSearchOpen(true);
+                }}
+                placeholder="Быстрый поиск: питомец, чип, владелец..."
+                className="w-full h-9 pl-9 pr-3 rounded-lg border border-slate-200 bg-slate-50 text-xs text-slate-900 focus:bg-white focus:outline-none focus:border-teal-700 transition-colors"
+              />
+
+              {searchOpen && globalSearch.trim().length > 0 && (
+                <div className="absolute left-0 right-0 top-11 bg-white border border-slate-200 rounded-xl shadow-lg py-2 z-40 max-h-80 overflow-y-auto">
+                  {!hasQuickMatches ? (
+                    <div className="px-4 py-3 text-xs text-slate-500">
+                      Совпадений не найдено
+                    </div>
+                  ) : (
+                    <div className="divide-y divide-slate-100 text-xs">
+                      {quickResults.pets.length > 0 && (
+                        <div className="py-1">
+                          <div className="px-3 py-1 text-[11px] font-medium text-slate-400">
+                            Пациенты
+                          </div>
+                          {quickResults.pets.map((pet) => (
+                            <button
+                              key={pet.id}
+                              type="button"
+                              onMouseDown={() => {
+                                openPetRecord(pet.id);
+                                setGlobalSearch('');
+                                setSearchOpen(false);
+                              }}
+                              className="w-full px-3 py-1.5 text-left hover:bg-slate-50 flex items-center justify-between gap-2"
+                            >
+                              <span className="font-medium text-slate-900">
+                                {pet.name} ({pet.species})
+                              </span>
+                              <span className="font-mono text-[11px] text-slate-400 tabular-nums">
+                                {pet.microchipNumber}
+                              </span>
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                      {quickResults.owners.length > 0 && (
+                        <div className="py-1">
+                          <div className="px-3 py-1 text-[11px] font-medium text-slate-400">
+                            Владельцы
+                          </div>
+                          {quickResults.owners.map((owner) => (
+                            <button
+                              key={owner.id}
+                              type="button"
+                              onMouseDown={() => {
+                                setActiveOwnerId(owner.id);
+                                setRole('owner');
+                                setOwnerSection('pets');
+                                setGlobalSearch('');
+                                setSearchOpen(false);
+                              }}
+                              className="w-full px-3 py-1.5 text-left hover:bg-slate-50 flex items-center justify-between gap-2"
+                            >
+                              <span className="font-medium text-slate-900">
+                                {owner.fullName}
+                              </span>
+                              <span className="text-[11px] text-slate-500 tabular-nums">
+                                {owner.phone}
+                              </span>
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                      {quickResults.meds.length > 0 && (
+                        <div className="py-1">
+                          <div className="px-3 py-1 text-[11px] font-medium text-slate-400">
+                            Аптека
+                          </div>
+                          {quickResults.meds.map((med) => (
+                            <button
+                              key={med.id}
+                              type="button"
+                              onMouseDown={() => {
+                                setRole('doctor');
+                                setDoctorTab('pharmacy');
+                                setGlobalSearch('');
+                                setSearchOpen(false);
+                              }}
+                              className="w-full px-3 py-1.5 text-left hover:bg-slate-50 flex items-center justify-between gap-2"
+                            >
+                              <span className="font-medium text-slate-900">
+                                {med.name}
+                              </span>
+                              <span className="font-mono text-[11px] text-slate-500 tabular-nums">
+                                {med.stockQty} {med.unit}
+                              </span>
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+
+            <div className="shrink-0">
+              <button
+                type="button"
+                onClick={() => setAppointmentModalPetId(null)}
+                disabled={!state || state.pets.length === 0}
+                className="px-4 py-2 text-xs font-medium text-white bg-teal-700 rounded-lg hover:bg-teal-800 disabled:opacity-50 transition-colors whitespace-nowrap shrink-0"
+              >
+                Записать на прием
+              </button>
+            </div>
+          </header>
 
         <main className="flex-1 p-6 lg:p-8 max-w-7xl w-full mx-auto">
           {loading && !state && (
@@ -716,6 +880,9 @@ export default function App() {
               onAddMedicalRecord={handleAddMedicalRecord}
               onAddVaccination={handleAddVaccination}
               onUpdatePetDetails={handleUpdatePetDetails}
+              onPrintExtract={(petId) =>
+                setPrintTarget({kind: 'pet-extract', petId})
+              }
             />
           )}
 
@@ -766,6 +933,9 @@ export default function App() {
               }}
               onCreateInvoice={handleCreateInvoice}
               onUpdateInvoiceStatus={handleUpdateInvoiceStatus}
+              onPrintInvoice={(invoiceId) =>
+                setPrintTarget({kind: 'invoice', invoiceId})
+              }
             />
           )}
 
@@ -823,5 +993,14 @@ export default function App() {
         />
       )}
     </div>
+
+      {state && printTarget && (
+        <PrintPreviewModal
+          target={printTarget}
+          state={state}
+          onClose={() => setPrintTarget(null)}
+        />
+      )}
+    </>
   );
 }

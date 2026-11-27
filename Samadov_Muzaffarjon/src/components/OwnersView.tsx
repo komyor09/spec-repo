@@ -1,4 +1,4 @@
-import {CheckCircle2, Clock, Plus, Receipt, Search, UserCheck} from 'lucide-react';
+import {CheckCircle2, Clock, Plus, Printer, Receipt, Search, UserCheck} from 'lucide-react';
 import {useMemo, useState, type FormEvent} from 'react';
 import type {ClinicState, InvoiceStatus} from '../types/clinic.ts';
 
@@ -9,6 +9,7 @@ export function OwnersView({
   onOpenOwnerPortal,
   onCreateInvoice,
   onUpdateInvoiceStatus,
+  onPrintInvoice,
 }: {
   state: ClinicState;
   onOpenNewOwner: () => void;
@@ -21,8 +22,10 @@ export function OwnersView({
     amountRub: number;
   }) => Promise<void>;
   onUpdateInvoiceStatus: (id: string, status: InvoiceStatus) => Promise<void>;
+  onPrintInvoice: (invoiceId: string) => void;
 }) {
   const [subTab, setSubTab] = useState<'owners' | 'invoices'>('owners');
+  const [invoiceFilter, setInvoiceFilter] = useState<'Все' | InvoiceStatus>('Все');
   const [search, setSearch] = useState('');
   const [showInvoiceForm, setShowInvoiceForm] = useState(false);
 
@@ -40,6 +43,24 @@ export function OwnersView({
         o.email.toLowerCase().includes(q),
     );
   }, [state.owners, search]);
+
+  const invoiceTotals = useMemo(() => {
+    let paid = 0;
+    let pending = 0;
+    for (const inv of state.invoices) {
+      if (inv.status === 'Оплачен') paid += inv.amountRub;
+      else pending += inv.amountRub;
+    }
+    return {total: paid + pending, paid, pending};
+  }, [state.invoices]);
+
+  const filteredInvoices = useMemo(
+    () =>
+      invoiceFilter === 'Все'
+        ? state.invoices
+        : state.invoices.filter((i) => i.status === invoiceFilter),
+    [state.invoices, invoiceFilter],
+  );
 
   const handleInvoiceSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -200,6 +221,44 @@ export function OwnersView({
 
       {subTab === 'invoices' && (
         <div className="space-y-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="bg-white border border-slate-200 rounded-xl p-4">
+              <div className="text-xs text-slate-500">Выставлено всего</div>
+              <div className="mt-1 text-xl font-semibold text-slate-900 font-mono tabular-nums">
+                {invoiceTotals.total.toLocaleString('ru-RU')} ₽
+              </div>
+            </div>
+            <div className="bg-white border border-slate-200 rounded-xl p-4">
+              <div className="text-xs text-slate-500">Оплачено</div>
+              <div className="mt-1 text-xl font-semibold text-emerald-700 font-mono tabular-nums">
+                {invoiceTotals.paid.toLocaleString('ru-RU')} ₽
+              </div>
+            </div>
+            <div className="bg-white border border-slate-200 rounded-xl p-4">
+              <div className="text-xs text-slate-500">Ожидает оплаты</div>
+              <div className="mt-1 text-xl font-semibold text-amber-700 font-mono tabular-nums">
+                {invoiceTotals.pending.toLocaleString('ru-RU')} ₽
+              </div>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-1 p-1 bg-slate-200/70 rounded-lg w-fit">
+            {(['Все', 'Ожидает оплаты', 'Оплачен'] as const).map((st) => (
+              <button
+                key={st}
+                type="button"
+                onClick={() => setInvoiceFilter(st)}
+                className={`px-3 py-1 text-xs font-medium rounded-md transition-colors whitespace-nowrap ${
+                  invoiceFilter === st
+                    ? 'bg-white text-slate-900 shadow-sm'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                {st}
+              </button>
+            ))}
+          </div>
+
           {showInvoiceForm && (
             <form
               onSubmit={handleInvoiceSubmit}
@@ -270,11 +329,11 @@ export function OwnersView({
                   <th className="py-3 px-4">Состав счета</th>
                   <th className="py-3 px-4 text-right">Сумма</th>
                   <th className="py-3 px-4">Статус</th>
-                  <th className="py-3 px-4 text-right">Оплата</th>
+                  <th className="py-3 px-4 text-right">Действия</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-200 text-sm">
-                {state.invoices.map((inv) => {
+                {filteredInvoices.map((inv) => {
                   const owner = state.owners.find((o) => o.id === inv.ownerId);
                   const pet = state.pets.find((p) => p.id === inv.petId);
                   return (
@@ -310,17 +369,27 @@ export function OwnersView({
                         )}
                       </td>
                       <td className="py-3 px-4 text-right whitespace-nowrap">
-                        {inv.status === 'Ожидает оплаты' && (
+                        <div className="inline-flex items-center gap-2">
                           <button
                             type="button"
-                            onClick={() =>
-                              onUpdateInvoiceStatus(inv.id, 'Оплачен')
-                            }
-                            className="px-2.5 py-1 text-xs font-medium text-teal-700 border border-teal-200 bg-teal-50 rounded-md hover:bg-teal-100"
+                            onClick={() => onPrintInvoice(inv.id)}
+                            className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-slate-700 border border-slate-200 bg-white rounded-md hover:bg-slate-50"
                           >
-                            Отметить оплаченным
+                            <Printer size={12} />
+                            Квитанция
                           </button>
-                        )}
+                          {inv.status === 'Ожидает оплаты' && (
+                            <button
+                              type="button"
+                              onClick={() =>
+                                onUpdateInvoiceStatus(inv.id, 'Оплачен')
+                              }
+                              className="px-2.5 py-1 text-xs font-medium text-teal-700 border border-teal-200 bg-teal-50 rounded-md hover:bg-teal-100"
+                            >
+                              Отметить оплаченным
+                            </button>
+                          )}
+                        </div>
                       </td>
                     </tr>
                   );

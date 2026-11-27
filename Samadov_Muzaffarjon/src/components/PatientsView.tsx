@@ -6,6 +6,7 @@ import {
   FilePlus2,
   Pencil,
   Plus,
+  Printer,
   Search,
   Syringe,
   Trash2,
@@ -117,6 +118,7 @@ export function PatientsView({
   onAddMedicalRecord,
   onAddVaccination,
   onUpdatePetDetails,
+  onPrintExtract,
 }: {
   state: ClinicState;
   selectedPetId: string | null;
@@ -133,6 +135,8 @@ export function PatientsView({
     heartRateBpm: number;
     treatmentPlan: string;
     prescriptions: PrescriptionItem[];
+    createInvoice?: boolean;
+    consultationFeeRub?: number;
   }) => Promise<string | null>;
   onAddVaccination: (payload: {
     petId: string;
@@ -149,6 +153,7 @@ export function PatientsView({
       Pick<Pet, 'status' | 'weightKg' | 'allergies' | 'diet' | 'cageNumber'>
     >,
   ) => Promise<void>;
+  onPrintExtract: (petId: string) => void;
 }) {
   const [search, setSearch] = useState('');
   const [speciesFilter, setSpeciesFilter] = useState<'Все' | PetSpecies>('Все');
@@ -231,6 +236,14 @@ export function PatientsView({
           </button>
 
           <div className="flex flex-wrap items-center gap-2.5">
+            <button
+              type="button"
+              onClick={() => onPrintExtract(selectedPet.id)}
+              className="inline-flex items-center gap-2 px-3.5 py-2 text-xs font-medium text-slate-700 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors whitespace-nowrap"
+            >
+              <Printer size={14} />
+              Печать / PDF
+            </button>
             <button
               type="button"
               onClick={() =>
@@ -978,6 +991,8 @@ function NewMedicalRecordForm({
     heartRateBpm: number;
     treatmentPlan: string;
     prescriptions: PrescriptionItem[];
+    createInvoice?: boolean;
+    consultationFeeRub?: number;
   }) => Promise<string | null>;
 }) {
   const [veterinarianId, setVeterinarianId] = useState(
@@ -997,8 +1012,24 @@ function NewMedicalRecordForm({
   const [frequency, setFrequency] = useState('2 раза в день');
   const [durationDays, setDurationDays] = useState('7');
   const [dispensedQty, setDispensedQty] = useState('1');
+  const [createInvoice, setCreateInvoice] = useState(true);
+  const [consultationFeeRub, setConsultationFeeRub] = useState('1800');
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+
+  const owner = state.owners.find((o) => o.id === pet.ownerId);
+  const discountRate =
+    owner?.loyaltyTier === 'VIP-полис'
+      ? 0.1
+      : owner?.loyaltyTier === 'Забота+'
+        ? 0.05
+        : 0;
+  const medsCost = prescriptions.reduce((sum, rx) => {
+    const med = state.medications.find((m) => m.id === rx.medicationId);
+    return sum + (med ? med.unitPriceRub * rx.dispensedQty : 0);
+  }, 0);
+  const feeValue = Math.max(0, Number(consultationFeeRub) || 0);
+  const invoiceTotal = Math.round((feeValue + medsCost) * (1 - discountRate));
 
   const addRx = () => {
     const med = state.medications.find((m) => m.id === selectedMedId);
@@ -1033,6 +1064,8 @@ function NewMedicalRecordForm({
       heartRateBpm: Number(heartRateBpm) || 92,
       treatmentPlan: treatmentPlan.trim() || 'Амбулаторное наблюдение',
       prescriptions,
+      createInvoice,
+      consultationFeeRub: feeValue,
     });
     setSaving(false);
     if (err) setError(err);
@@ -1245,6 +1278,56 @@ function NewMedicalRecordForm({
                 </button>
               </div>
             ))}
+          </div>
+        )}
+      </div>
+
+      <div className="border-t border-slate-200 pt-4 space-y-3">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <label className="inline-flex items-center gap-2 text-xs font-medium text-slate-800 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={createInvoice}
+              onChange={(e) => setCreateInvoice(e.target.checked)}
+              className="rounded border-slate-300 text-teal-700 focus:ring-teal-700"
+            />
+            Автоматически выставить счет владельцу после осмотра
+          </label>
+          {owner && (
+            <span className="text-xs text-slate-500">
+              Программа: {owner.loyaltyTier}
+              {discountRate > 0 ? ` (скидка ${Math.round(discountRate * 100)}%)` : ''}
+            </span>
+          )}
+        </div>
+
+        {createInvoice && (
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 p-3.5 rounded-lg bg-slate-50 border border-slate-200 items-center text-xs">
+            <div>
+              <label className="block text-slate-500 mb-1">
+                Стоимость приема (₽)
+              </label>
+              <input
+                type="number"
+                min="0"
+                step="50"
+                value={consultationFeeRub}
+                onChange={(e) => setConsultationFeeRub(e.target.value)}
+                className="w-full h-9 px-2.5 rounded-lg border border-slate-200 bg-white font-mono tabular-nums text-slate-900"
+              />
+            </div>
+            <div className="text-slate-600 tabular-nums">
+              <div>Препараты со склада:</div>
+              <div className="font-mono font-semibold text-slate-900 mt-0.5">
+                {medsCost.toLocaleString('ru-RU')} ₽
+              </div>
+            </div>
+            <div className="sm:text-right tabular-nums">
+              <div className="text-slate-500">Итого к оплате по счету:</div>
+              <div className="font-mono text-sm font-semibold text-teal-700 mt-0.5">
+                {invoiceTotal.toLocaleString('ru-RU')} ₽
+              </div>
+            </div>
           </div>
         )}
       </div>

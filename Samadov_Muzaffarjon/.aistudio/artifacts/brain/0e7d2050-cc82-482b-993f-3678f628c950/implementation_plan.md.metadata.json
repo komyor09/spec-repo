@@ -1,0 +1,6 @@
+{
+  "summary":  "План добавления объектно-ориентированного C# (.NET 8) ASP.NET Core Web API бэкенда в проект «ВетМед» без изменения существующего UI и с сохранением запуска через npm run dev, а также обновления README.md для запуска через dotnet run.",
+  "updatedAt":  "2026-11-27T04:11:52.545006423Z",
+  "requestFeedback":  true,
+  "userFacing":  true
+}

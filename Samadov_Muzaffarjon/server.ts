@@ -201,7 +201,10 @@ async function startServer() {
 
   app.post('/api/medical-records', (req, res) => {
     const state = ensureDb();
-    const body = req.body as Partial<MedicalRecord>;
+    const body = req.body as Partial<MedicalRecord> & {
+      createInvoice?: boolean;
+      consultationFeeRub?: number;
+    };
     if (!body.petId || !body.veterinarianId || !body.diagnosis?.trim()) {
       res.status(400).json({error: 'Укажите пациента, врача и диагноз'});
       return;
@@ -213,11 +216,13 @@ async function startServer() {
     }
 
     const prescriptions = Array.isArray(body.prescriptions) ? body.prescriptions : [];
+    let medsCost = 0;
     for (const rx of prescriptions) {
       if (rx.dispensedQty > 0) {
         const med = state.medications.find((m) => m.id === rx.medicationId);
         if (med) {
           med.stockQty = Math.max(0, med.stockQty - rx.dispensedQty);
+          medsCost += med.unitPriceRub * rx.dispensedQty;
         }
       }
     }
@@ -240,8 +245,41 @@ async function startServer() {
     };
 
     state.medicalRecords.unshift(record);
+
+    let invoice: Invoice | undefined;
+    if (body.createInvoice) {
+      const owner = state.owners.find((o) => o.id === pet.ownerId);
+      const discountRate =
+        owner?.loyaltyTier === 'VIP-полис'
+          ? 0.1
+          : owner?.loyaltyTier === 'Забота+'
+            ? 0.05
+            : 0;
+      const fee = Math.max(0, Number(body.consultationFeeRub) || 0);
+      const rawAmount = fee + medsCost;
+      const finalAmount = Math.round(rawAmount * (1 - discountRate));
+      const rxNote =
+        prescriptions.length > 0
+          ? ` + препараты (${prescriptions.length} поз.)`
+          : '';
+      const discountNote =
+        discountRate > 0
+          ? ` · скидка ${Math.round(discountRate * 100)}% (${owner?.loyaltyTier})`
+          : '';
+      invoice = {
+        id: `inv-${Date.now()}`,
+        ownerId: pet.ownerId,
+        petId: pet.id,
+        date: record.visitDate,
+        title: `Осмотр: ${record.diagnosis}${rxNote}${discountNote}`,
+        amountRub: finalAmount,
+        status: 'Ожидает оплаты',
+      };
+      state.invoices.unshift(invoice);
+    }
+
     saveDb(state);
-    res.status(201).json({record, state});
+    res.status(201).json(invoice ? {record, invoice, state} : {record, state});
   });
 
   app.post('/api/vaccinations', (req, res) => {
