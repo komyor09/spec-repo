@@ -1,0 +1,172 @@
+<Window x:Class="PrintShop.App.Views.Dialogs.OrderEditWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="{Binding Title}" Width="1120" Height="760" MinWidth="1000" MinHeight="680"
+        WindowStartupLocation="CenterOwner" ShowInTaskbar="False"
+        FontFamily="Segoe UI" FontSize="13" Background="{StaticResource BackgroundBrush}">
+    <DockPanel Margin="16">
+        <!-- Нижняя панель: итоги и кнопки -->
+        <Border DockPanel.Dock="Bottom" Style="{StaticResource Card}" Margin="0,12,0,0" Padding="14,10">
+            <DockPanel>
+                <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
+                    <Button Content="💾 Сохранить заказ" Click="Save_Click" Style="{StaticResource AccentButton}" Padding="18,8"/>
+                    <Button Content="Отмена" IsCancel="True" Style="{StaticResource SecondaryButton}" Margin="0"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="Без скидки: " Foreground="#7A8796"/>
+                    <TextBlock Text="{Binding Subtotal, StringFormat={}{0:N2} сом}" Margin="0,0,18,0"/>
+                    <TextBlock Text="Скидка за тираж: " Foreground="#7A8796"/>
+                    <TextBlock Text="{Binding Discount, StringFormat={}{0:N2} сом}" Foreground="#1E8449" Margin="0,0,18,0"/>
+                    <TextBlock Text="ИТОГО: " FontWeight="SemiBold" FontSize="16"/>
+                    <TextBlock Text="{Binding Total, StringFormat={}{0:N2} сом}" FontWeight="Bold" FontSize="16" Foreground="{StaticResource PrimaryBrush}"/>
+                </StackPanel>
+            </DockPanel>
+        </Border>
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="14"/>
+                <ColumnDefinition Width="400"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Левая часть: данные заказа и позиции -->
+            <DockPanel>
+                <Border DockPanel.Dock="Top" Style="{StaticResource Card}" Margin="0,0,0,12">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="12"/>
+                            <ColumnDefinition Width="130"/>
+                            <ColumnDefinition Width="12"/>
+                            <ColumnDefinition Width="140"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/><RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/><RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Text="Клиент *" Style="{StaticResource FieldLabel}" Margin="0,0,0,3"/>
+                        <DockPanel Grid.Row="1">
+                            <Button DockPanel.Dock="Right" Content="＋" ToolTip="Новый клиент" Command="{Binding NewCustomerCommand}" MinWidth="0" Padding="10,4" Margin="6,0,0,0"/>
+                            <ComboBox ItemsSource="{Binding Customers}" SelectedItem="{Binding Customer}" IsEditable="False" IsTextSearchEnabled="True" TextSearch.TextPath="Name"/>
+                        </DockPanel>
+                        <TextBlock Grid.Column="2" Text="Дата приёма" Style="{StaticResource FieldLabel}" Margin="0,0,0,3"/>
+                        <TextBox Grid.Column="2" Grid.Row="1" Text="{Binding CreatedAt, StringFormat=dd.MM.yyyy HH:mm, Mode=OneWay}" IsReadOnly="True" Background="#F3F5F8"/>
+                        <TextBlock Grid.Column="4" Text="Дата выдачи *" Style="{StaticResource FieldLabel}" Margin="0,0,0,3"/>
+                        <DatePicker Grid.Column="4" Grid.Row="1" SelectedDate="{Binding DueDate}"/>
+
+                        <TextBlock Grid.Row="2" Text="Комментарий" Style="{StaticResource FieldLabel}"/>
+                        <TextBox Grid.Row="3" Text="{Binding Comment, UpdateSourceTrigger=PropertyChanged}"/>
+                        <TextBlock Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="3" Text="Файл макета" Style="{StaticResource FieldLabel}"/>
+                        <DockPanel Grid.Row="3" Grid.Column="2" Grid.ColumnSpan="3">
+                            <Button DockPanel.Dock="Right" Content="Открыть" Command="{Binding OpenLayoutCommand}" MinWidth="0" Padding="8,4" Margin="6,0,0,0" Style="{StaticResource SecondaryButton}"/>
+                            <Button DockPanel.Dock="Right" Content="📎" ToolTip="Прикрепить файл макета" Command="{Binding BrowseLayoutCommand}" MinWidth="0" Padding="8,4" Margin="6,0,0,0"/>
+                            <TextBlock Text="{Binding LayoutFileName}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" ToolTip="{Binding LayoutPath}"/>
+                        </DockPanel>
+                    </Grid>
+                </Border>
+
+                <DockPanel DockPanel.Dock="Top" Margin="0,0,0,6">
+                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
+                        <Button Content="✎ В редактор" Command="{Binding EditItemCommand}" Style="{StaticResource SecondaryButton}"/>
+                        <Button Content="Удалить позицию" Command="{Binding RemoveItemCommand}" Style="{StaticResource DangerButton}" Margin="0"/>
+                    </StackPanel>
+                    <TextBlock Text="Позиции заказа" FontWeight="SemiBold" FontSize="14" VerticalAlignment="Center"/>
+                </DockPanel>
+                <DataGrid ItemsSource="{Binding Items}" SelectedItem="{Binding SelectedItem}" RowHeight="NaN" MinRowHeight="28">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="№" Binding="{Binding Index}" Width="35"/>
+                        <DataGridTextColumn Header="Изделие" Binding="{Binding Description}" Width="3*">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock"><Setter Property="TextWrapping" Value="Wrap"/></Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="Тираж" Binding="{Binding Quantity, StringFormat=N0}" Width="70"/>
+                        <DataGridTextColumn Header="Услуги" Binding="{Binding Services}" Width="2*"/>
+                        <DataGridTextColumn Header="Скидка" Binding="{Binding Discount, StringFormat=N2}" Width="75"/>
+                        <DataGridTextColumn Header="Стоимость" Binding="{Binding Price, StringFormat=N2}" Width="90"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </DockPanel>
+
+            <!-- Правая часть: редактор позиции -->
+            <Border Grid.Column="2" Style="{StaticResource Card}">
+                <DockPanel>
+                    <TextBlock DockPanel.Dock="Top" Text="Позиция (изделие)" FontWeight="SemiBold" FontSize="14"/>
+                    <StackPanel DockPanel.Dock="Bottom" Margin="0,10,0,0">
+                        <Border Background="#F3F7FB" CornerRadius="4" Padding="10" Margin="0,0,0,10">
+                            <TextBlock Text="{Binding Preview}" TextWrapping="Wrap" FontSize="12">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding PreviewIsError}" Value="True">
+                                                <Setter Property="Foreground" Value="#C0392B"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </Border>
+                        <StackPanel Orientation="Horizontal">
+                            <Button Content="{Binding AddButtonText}" Command="{Binding AddItemCommand}" Style="{StaticResource AccentButton}"/>
+                            <Button Content="Сброс" Command="{Binding ClearEditorCommand}" Style="{StaticResource SecondaryButton}" Margin="0"/>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <StackPanel>
+                            <TextBlock Text="Вид продукции" Style="{StaticResource FieldLabel}"/>
+                            <ComboBox ItemsSource="{Binding ProductTypes}" SelectedItem="{Binding ProductType}" DisplayMemberPath="Name"/>
+                            <TextBlock Text="Материал" Style="{StaticResource FieldLabel}"/>
+                            <ComboBox ItemsSource="{Binding Materials}" SelectedItem="{Binding Material}"/>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/><ColumnDefinition Width="10"/><ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Visibility="{Binding HasFormat, Converter={StaticResource BoolToVis}}">
+                                    <TextBlock Text="Формат" Style="{StaticResource FieldLabel}"/>
+                                    <ComboBox ItemsSource="{Binding Formats}" SelectedItem="{Binding Format}"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Text="Тираж, шт" Style="{StaticResource FieldLabel}"/>
+                                    <TextBox Text="{Binding QuantityText, UpdateSourceTrigger=PropertyChanged}"/>
+                                </StackPanel>
+                            </Grid>
+                            <StackPanel Visibility="{Binding IsBanner, Converter={StaticResource BoolToVis}, ConverterParameter=Invert}">
+                                <TextBlock Text="Цветность" Style="{StaticResource FieldLabel}"/>
+                                <ComboBox ItemsSource="{Binding Colors}" SelectedItem="{Binding Color}" DisplayMemberPath="Name"/>
+                            </StackPanel>
+                            <StackPanel Visibility="{Binding IsBooklet, Converter={StaticResource BoolToVis}}">
+                                <TextBlock Text="Количество страниц (кратно 4)" Style="{StaticResource FieldLabel}"/>
+                                <TextBox Text="{Binding PagesText, UpdateSourceTrigger=PropertyChanged}"/>
+                            </StackPanel>
+                            <Grid Visibility="{Binding IsBanner, Converter={StaticResource BoolToVis}}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/><ColumnDefinition Width="10"/><ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel>
+                                    <TextBlock Text="Ширина, м" Style="{StaticResource FieldLabel}"/>
+                                    <TextBox Text="{Binding WidthText, UpdateSourceTrigger=PropertyChanged}"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Text="Высота, м" Style="{StaticResource FieldLabel}"/>
+                                    <TextBox Text="{Binding HeightText, UpdateSourceTrigger=PropertyChanged}"/>
+                                </StackPanel>
+                            </Grid>
+                            <CheckBox Content="Фигурная (контурная) вырубка +30%" IsChecked="{Binding DieCut}" Margin="0,10,0,0"
+                                      Visibility="{Binding IsSticker, Converter={StaticResource BoolToVis}}"/>
+                            <TextBlock Text="Дополнительные услуги" Style="{StaticResource FieldLabel}" Margin="0,12,0,4"/>
+                            <ItemsControl ItemsSource="{Binding Services}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <CheckBox Content="{Binding Caption}" IsChecked="{Binding IsChecked}" Margin="0,2"/>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </ScrollViewer>
+                </DockPanel>
+            </Border>
+        </Grid>
+    </DockPanel>
+</Window>

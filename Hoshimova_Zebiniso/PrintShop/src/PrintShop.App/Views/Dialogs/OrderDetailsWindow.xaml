@@ -1,0 +1,73 @@
+<Window x:Class="PrintShop.App.Views.Dialogs.OrderDetailsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Заказ" Width="900" Height="640" MinWidth="760" MinHeight="520"
+        WindowStartupLocation="CenterOwner" ShowInTaskbar="False"
+        FontFamily="Segoe UI" FontSize="13" Background="{StaticResource BackgroundBrush}">
+    <DockPanel Margin="16">
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,0,0">
+            <Button x:Name="PayButton" Content="💳 Принять оплату" Click="Pay_Click"/>
+            <Button Content="🧾 Квитанция" Click="Receipt_Click"/>
+            <Button Content="Закрыть" IsCancel="True" Style="{StaticResource SecondaryButton}" Margin="0"/>
+        </StackPanel>
+
+        <Border DockPanel.Dock="Top" Style="{StaticResource Card}" Margin="0,0,0,12">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/><ColumnDefinition/><ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <StackPanel>
+                    <TextBlock x:Name="NumberText" FontSize="18" FontWeight="SemiBold"/>
+                    <TextBlock x:Name="StatusText" Foreground="{StaticResource PrimaryBrush}" FontWeight="SemiBold" Margin="0,4,0,0"/>
+                    <TextBlock x:Name="DatesText" Foreground="#46525F" Margin="0,4,0,0"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1">
+                    <TextBlock Text="Клиент" Foreground="#7A8796"/>
+                    <TextBlock x:Name="CustomerText" FontWeight="SemiBold" TextWrapping="Wrap"/>
+                    <TextBlock x:Name="ContactsText" Foreground="#46525F" TextWrapping="Wrap"/>
+                    <TextBlock x:Name="ManagerText" Foreground="#46525F" Margin="0,4,0,0"/>
+                </StackPanel>
+                <StackPanel Grid.Column="2">
+                    <TextBlock x:Name="TotalText" FontSize="16" FontWeight="SemiBold"/>
+                    <TextBlock x:Name="DiscountText" Foreground="#1E8449"/>
+                    <TextBlock x:Name="PaidText"/>
+                    <TextBlock x:Name="DebtText" FontWeight="SemiBold" Foreground="#C0392B"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+        <TextBlock DockPanel.Dock="Top" x:Name="CommentText" TextWrapping="Wrap" Margin="0,0,0,8" Foreground="#46525F"/>
+
+        <TabControl Padding="8">
+            <TabItem Header="  Позиции  ">
+                <DataGrid x:Name="ItemsGrid">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Изделие" Binding="{Binding Description}" Width="3*"/>
+                        <DataGridTextColumn Header="Тираж" Binding="{Binding Quantity, StringFormat=N0}" Width="70"/>
+                        <DataGridTextColumn Header="Услуги" Binding="{Binding ServicesText}" Width="2*"/>
+                        <DataGridTextColumn Header="Цена за шт" Binding="{Binding UnitPrice, StringFormat=N2}" Width="85"/>
+                        <DataGridTextColumn Header="Скидка" Binding="{Binding Discount, StringFormat=N2}" Width="75"/>
+                        <DataGridTextColumn Header="Стоимость" Binding="{Binding Price, StringFormat=N2}" Width="90"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </TabItem>
+            <TabItem Header="  История статусов  ">
+                <DataGrid x:Name="HistoryGrid">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Дата и время" Binding="{Binding ChangedAt, StringFormat=dd.MM.yyyy HH:mm}" Width="150"/>
+                        <DataGridTextColumn Header="Статус" Binding="{Binding StatusName}" Width="200"/>
+                        <DataGridTextColumn Header="Сотрудник" Binding="{Binding UserName}" Width="*"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </TabItem>
+            <TabItem Header="  Оплаты  ">
+                <DataGrid x:Name="PaymentsGrid">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Дата" Binding="{Binding PaymentDate, StringFormat=dd.MM.yyyy HH:mm}" Width="150"/>
+                        <DataGridTextColumn Header="Тип" Binding="{Binding PaymentTypeName}" Width="200"/>
+                        <DataGridTextColumn Header="Сумма, сом" Binding="{Binding Amount, StringFormat=N2}" Width="*"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </TabItem>
+        </TabControl>
+    </DockPanel>
+</Window>
