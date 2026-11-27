@@ -1,8 +1,8 @@
-using AcademyVector.Api.Application.Interfaces;
-using AcademyVector.Api.Domain.Entities;
-using AcademyVector.Api.Domain.Exceptions;
+using AcademyVector.ConsoleApp.Application.Interfaces;
+using AcademyVector.ConsoleApp.Domain.Entities;
+using AcademyVector.ConsoleApp.Domain.Exceptions;
 
-namespace AcademyVector.Api.Application.Services;
+namespace AcademyVector.ConsoleApp.Application.Services;
 
 public sealed class PlatformService : IPlatformService
 {

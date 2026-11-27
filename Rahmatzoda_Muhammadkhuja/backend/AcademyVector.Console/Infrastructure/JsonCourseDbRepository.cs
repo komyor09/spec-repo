@@ -1,9 +1,9 @@
 using System.Text.Encodings.Web;
 using System.Text.Json;
-using AcademyVector.Api.Application.Interfaces;
-using AcademyVector.Api.Domain.Entities;
+using AcademyVector.ConsoleApp.Application.Interfaces;
+using AcademyVector.ConsoleApp.Domain.Entities;
 
-namespace AcademyVector.Api.Infrastructure;
+namespace AcademyVector.ConsoleApp.Infrastructure;
 
 public sealed class JsonCourseDbRepository : ICourseDbRepository
 {

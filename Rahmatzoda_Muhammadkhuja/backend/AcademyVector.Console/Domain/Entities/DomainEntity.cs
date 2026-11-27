@@ -1,7 +1,7 @@
 using System.Text.Json.Serialization;
-using AcademyVector.Api.Domain.Exceptions;
+using AcademyVector.ConsoleApp.Domain.Exceptions;
 
-namespace AcademyVector.Api.Domain.Entities;
+namespace AcademyVector.ConsoleApp.Domain.Entities;
 
 /// <summary>
 /// Абстрактный базовый класс любой доменной сущности платформы.

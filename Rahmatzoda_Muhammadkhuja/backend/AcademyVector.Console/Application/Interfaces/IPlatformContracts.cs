@@ -1,6 +1,6 @@
-using AcademyVector.Api.Domain.Entities;
+using AcademyVector.ConsoleApp.Domain.Entities;
 
-namespace AcademyVector.Api.Application.Interfaces;
+namespace AcademyVector.ConsoleApp.Application.Interfaces;
 
 public interface ISeedDataProvider
 {

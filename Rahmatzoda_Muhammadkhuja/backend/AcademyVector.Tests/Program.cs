@@ -1,8 +1,8 @@
-using AcademyVector.Api.Application.Interfaces;
-using AcademyVector.Api.Application.Services;
-using AcademyVector.Api.Domain.Entities;
-using AcademyVector.Api.Domain.Exceptions;
-using AcademyVector.Api.Infrastructure;
+using AcademyVector.ConsoleApp.Application.Interfaces;
+using AcademyVector.ConsoleApp.Application.Services;
+using AcademyVector.ConsoleApp.Domain.Entities;
+using AcademyVector.ConsoleApp.Domain.Exceptions;
+using AcademyVector.ConsoleApp.Infrastructure;
 
 namespace AcademyVector.Tests;
 

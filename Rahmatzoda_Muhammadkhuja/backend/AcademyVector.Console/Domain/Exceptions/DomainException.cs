@@ -1,4 +1,4 @@
-namespace AcademyVector.Api.Domain.Exceptions;
+namespace AcademyVector.ConsoleApp.Domain.Exceptions;
 
 /// <summary>
 /// Базовый абстрактный класс иерархии доменных исключений.
@@ -19,7 +19,7 @@ public abstract class DomainException : Exception
 /// </summary>
 public sealed class ValidationDomainException : DomainException
 {
-    public override int StatusCode => StatusCodes.Status400BadRequest;
+    public override int StatusCode => 400;
 
     public ValidationDomainException(string message, string errorCode = "VALIDATION_ERROR")
         : base(message, errorCode)
@@ -32,7 +32,7 @@ public sealed class ValidationDomainException : DomainException
 /// </summary>
 public sealed class NotFoundDomainException : DomainException
 {
-    public override int StatusCode => StatusCodes.Status404NotFound;
+    public override int StatusCode => 404;
 
     public NotFoundDomainException(string message, string errorCode = "NOT_FOUND")
         : base(message, errorCode)
@@ -45,7 +45,7 @@ public sealed class NotFoundDomainException : DomainException
 /// </summary>
 public sealed class ConflictDomainException : DomainException
 {
-    public override int StatusCode => StatusCodes.Status409Conflict;
+    public override int StatusCode => 409;
     public object? Details { get; }
 
     public ConflictDomainException(string message, string errorCode = "CONFLICT", object? details = null)

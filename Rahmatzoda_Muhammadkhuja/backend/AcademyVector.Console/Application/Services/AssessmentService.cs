@@ -1,7 +1,7 @@
-using AcademyVector.Api.Application.Interfaces;
-using AcademyVector.Api.Domain.Entities;
+using AcademyVector.ConsoleApp.Application.Interfaces;
+using AcademyVector.ConsoleApp.Domain.Entities;
 
-namespace AcademyVector.Api.Application.Services;
+namespace AcademyVector.ConsoleApp.Application.Services;
 
 public sealed class AssessmentService : IAssessmentService
 {

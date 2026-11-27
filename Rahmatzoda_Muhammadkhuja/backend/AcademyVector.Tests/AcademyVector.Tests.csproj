@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AcademyVector.Api\AcademyVector.Api.csproj" />
+    <ProjectReference Include="..\AcademyVector.Console\AcademyVector.Console.csproj" />
   </ItemGroup>
 
 </Project>
