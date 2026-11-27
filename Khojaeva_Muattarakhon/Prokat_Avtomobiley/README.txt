@@ -1,0 +1,1 @@
+Проект: Прокат автомобилей\nЯзык: C#\nТип: Console Application\n\nОткрыть файл Prokat_Avtomobiley.csproj в Visual Studio 2022 и запустить проект (F5).\n
