@@ -1,0 +1,14 @@
+C:\Users\townh\OneDrive\Desktop\AirTicketSales\bin\Debug\net10.0\AirTicketSales.exe
+C:\Users\townh\OneDrive\Desktop\AirTicketSales\bin\Debug\net10.0\AirTicketSales.deps.json
+C:\Users\townh\OneDrive\Desktop\AirTicketSales\bin\Debug\net10.0\AirTicketSales.runtimeconfig.json
+C:\Users\townh\OneDrive\Desktop\AirTicketSales\bin\Debug\net10.0\AirTicketSales.dll
+C:\Users\townh\OneDrive\Desktop\AirTicketSales\bin\Debug\net10.0\AirTicketSales.pdb
+C:\Users\townh\OneDrive\Desktop\AirTicketSales\obj\Debug\net10.0\AirTicketSales.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\townh\OneDrive\Desktop\AirTicketSales\obj\Debug\net10.0\AirTicketSales.AssemblyInfoInputs.cache
+C:\Users\townh\OneDrive\Desktop\AirTicketSales\obj\Debug\net10.0\AirTicketSales.AssemblyInfo.cs
+C:\Users\townh\OneDrive\Desktop\AirTicketSales\obj\Debug\net10.0\AirTicketSales.csproj.CoreCompileInputs.cache
+C:\Users\townh\OneDrive\Desktop\AirTicketSales\obj\Debug\net10.0\AirTicketSales.dll
+C:\Users\townh\OneDrive\Desktop\AirTicketSales\obj\Debug\net10.0\refint\AirTicketSales.dll
+C:\Users\townh\OneDrive\Desktop\AirTicketSales\obj\Debug\net10.0\AirTicketSales.pdb
+C:\Users\townh\OneDrive\Desktop\AirTicketSales\obj\Debug\net10.0\AirTicketSales.genruntimeconfig.cache
+C:\Users\townh\OneDrive\Desktop\AirTicketSales\obj\Debug\net10.0\ref\AirTicketSales.dll
