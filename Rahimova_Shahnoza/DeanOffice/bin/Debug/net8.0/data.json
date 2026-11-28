@@ -1,0 +1,134 @@
+{
+  "Students": [
+    {
+      "Id": 1,
+      "FullName": "Иванов Иван Иванович",
+      "Group": "ИС-21",
+      "Course": 2
+    },
+    {
+      "Id": 2,
+      "FullName": "Петрова Анна Сергеевна",
+      "Group": "ИС-21",
+      "Course": 2
+    },
+    {
+      "Id": 3,
+      "FullName": "Сидоров Олег Петрович",
+      "Group": "ИС-21",
+      "Course": 2
+    },
+    {
+      "Id": 4,
+      "FullName": "Каримова Малика Рустамовна",
+      "Group": "ПО-31",
+      "Course": 3
+    },
+    {
+      "Id": 5,
+      "FullName": "Алиев Джамшед Фарходович",
+      "Group": "ПО-31",
+      "Course": 3
+    },
+    {
+      "Id": 6,
+      "FullName": "0",
+      "Group": "90",
+      "Course": 4
+    }
+  ],
+  "Subjects": [
+    {
+      "Id": 1,
+      "Name": "Математика",
+      "Control": 0,
+      "Course": 2
+    },
+    {
+      "Id": 2,
+      "Name": "Программирование",
+      "Control": 0,
+      "Course": 2
+    },
+    {
+      "Id": 3,
+      "Name": "Физкультура",
+      "Control": 1,
+      "Course": 2
+    },
+    {
+      "Id": 4,
+      "Name": "Базы данных",
+      "Control": 0,
+      "Course": 3
+    },
+    {
+      "Id": 5,
+      "Name": "Английский язык",
+      "Control": 1,
+      "Course": 3
+    }
+  ],
+  "Results": [
+    {
+      "StudentId": 1,
+      "SubjectId": 1,
+      "Grade": 5,
+      "Date": "2026-11-28T00:00:00+05:00"
+    },
+    {
+      "StudentId": 1,
+      "SubjectId": 2,
+      "Grade": 4,
+      "Date": "2026-11-28T00:00:00+05:00"
+    },
+    {
+      "StudentId": 1,
+      "SubjectId": 3,
+      "Grade": 1,
+      "Date": "2026-11-28T00:00:00+05:00"
+    },
+    {
+      "StudentId": 2,
+      "SubjectId": 1,
+      "Grade": 4,
+      "Date": "2026-11-28T00:00:00+05:00"
+    },
+    {
+      "StudentId": 2,
+      "SubjectId": 2,
+      "Grade": 5,
+      "Date": "2026-11-28T00:00:00+05:00"
+    },
+    {
+      "StudentId": 2,
+      "SubjectId": 3,
+      "Grade": 1,
+      "Date": "2026-11-28T00:00:00+05:00"
+    },
+    {
+      "StudentId": 3,
+      "SubjectId": 1,
+      "Grade": 2,
+      "Date": "2026-11-28T00:00:00+05:00"
+    },
+    {
+      "StudentId": 4,
+      "SubjectId": 4,
+      "Grade": 5,
+      "Date": "2026-11-28T00:00:00+05:00"
+    },
+    {
+      "StudentId": 4,
+      "SubjectId": 5,
+      "Grade": 1,
+      "Date": "2026-11-28T00:00:00+05:00"
+    },
+    {
+      "StudentId": 5,
+      "SubjectId": 4,
+      "Grade": 3,
+      "Date": "2026-11-28T00:00:00+05:00"
+    }
+  ]
+}
