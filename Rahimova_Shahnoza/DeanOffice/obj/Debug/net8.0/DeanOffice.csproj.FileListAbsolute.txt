@@ -1,0 +1,14 @@
+C:\Users\111\Desktop\DeanOffice\bin\Debug\net8.0\DeanOffice.exe
+C:\Users\111\Desktop\DeanOffice\bin\Debug\net8.0\DeanOffice.deps.json
+C:\Users\111\Desktop\DeanOffice\bin\Debug\net8.0\DeanOffice.runtimeconfig.json
+C:\Users\111\Desktop\DeanOffice\bin\Debug\net8.0\DeanOffice.dll
+C:\Users\111\Desktop\DeanOffice\bin\Debug\net8.0\DeanOffice.pdb
+C:\Users\111\Desktop\DeanOffice\obj\Debug\net8.0\DeanOffice.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\111\Desktop\DeanOffice\obj\Debug\net8.0\DeanOffice.AssemblyInfoInputs.cache
+C:\Users\111\Desktop\DeanOffice\obj\Debug\net8.0\DeanOffice.AssemblyInfo.cs
+C:\Users\111\Desktop\DeanOffice\obj\Debug\net8.0\DeanOffice.csproj.CoreCompileInputs.cache
+C:\Users\111\Desktop\DeanOffice\obj\Debug\net8.0\DeanOffice.dll
+C:\Users\111\Desktop\DeanOffice\obj\Debug\net8.0\refint\DeanOffice.dll
+C:\Users\111\Desktop\DeanOffice\obj\Debug\net8.0\DeanOffice.pdb
+C:\Users\111\Desktop\DeanOffice\obj\Debug\net8.0\DeanOffice.genruntimeconfig.cache
+C:\Users\111\Desktop\DeanOffice\obj\Debug\net8.0\ref\DeanOffice.dll
