@@ -1,0 +1,16 @@
+C:\Users\abdul\OneDrive\Desktop\Restaurant_CSharp\Restaurant\RestaurantApp\bin\Debug\net8.0-windows\RestaurantApp.exe
+C:\Users\abdul\OneDrive\Desktop\Restaurant_CSharp\Restaurant\RestaurantApp\bin\Debug\net8.0-windows\RestaurantApp.deps.json
+C:\Users\abdul\OneDrive\Desktop\Restaurant_CSharp\Restaurant\RestaurantApp\bin\Debug\net8.0-windows\RestaurantApp.runtimeconfig.json
+C:\Users\abdul\OneDrive\Desktop\Restaurant_CSharp\Restaurant\RestaurantApp\bin\Debug\net8.0-windows\RestaurantApp.runtimeconfig.dev.json
+C:\Users\abdul\OneDrive\Desktop\Restaurant_CSharp\Restaurant\RestaurantApp\bin\Debug\net8.0-windows\RestaurantApp.dll
+C:\Users\abdul\OneDrive\Desktop\Restaurant_CSharp\Restaurant\RestaurantApp\bin\Debug\net8.0-windows\RestaurantApp.pdb
+C:\Users\abdul\OneDrive\Desktop\Restaurant_CSharp\Restaurant\RestaurantApp\obj\Debug\net8.0-windows\RestaurantApp.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\abdul\OneDrive\Desktop\Restaurant_CSharp\Restaurant\RestaurantApp\obj\Debug\net8.0-windows\RestaurantApp.AssemblyInfoInputs.cache
+C:\Users\abdul\OneDrive\Desktop\Restaurant_CSharp\Restaurant\RestaurantApp\obj\Debug\net8.0-windows\RestaurantApp.AssemblyInfo.cs
+C:\Users\abdul\OneDrive\Desktop\Restaurant_CSharp\Restaurant\RestaurantApp\obj\Debug\net8.0-windows\RestaurantApp.csproj.CoreCompileInputs.cache
+C:\Users\abdul\OneDrive\Desktop\Restaurant_CSharp\Restaurant\RestaurantApp\obj\Debug\net8.0-windows\RestaurantApp.dll
+C:\Users\abdul\OneDrive\Desktop\Restaurant_CSharp\Restaurant\RestaurantApp\obj\Debug\net8.0-windows\refint\RestaurantApp.dll
+C:\Users\abdul\OneDrive\Desktop\Restaurant_CSharp\Restaurant\RestaurantApp\obj\Debug\net8.0-windows\RestaurantApp.pdb
+C:\Users\abdul\OneDrive\Desktop\Restaurant_CSharp\Restaurant\RestaurantApp\obj\Debug\net8.0-windows\RestaurantApp.genruntimeconfig.cache
+C:\Users\abdul\OneDrive\Desktop\Restaurant_CSharp\Restaurant\RestaurantApp\obj\Debug\net8.0-windows\ref\RestaurantApp.dll
+C:\Users\abdul\OneDrive\Desktop\Restaurant_CSharp\Restaurant\RestaurantApp\obj\Debug\net8.0-windows\Restaura.085412B4.Up2Date
