@@ -1,0 +1,8 @@
+bin/
+obj/
+.vs/
+.idea/
+*.user
+shop.db
+shop.db-shm
+shop.db-wal

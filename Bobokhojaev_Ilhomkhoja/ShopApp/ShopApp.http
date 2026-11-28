@@ -1,0 +1,62 @@
+@host = http://localhost:5000
+@client = 11111111-2222-3333-4444-555555555555
+@admin = admin123
+
+### Категории
+GET {{host}}/api/categories
+
+### Товары: книги, сначала дешёвые
+GET {{host}}/api/products?categoryId=2&sort=price_asc
+
+### Поиск
+GET {{host}}/api/products?search=клав
+
+### Корзина
+GET {{host}}/api/cart
+X-Client-Id: {{client}}
+
+### Добавить в корзину
+POST {{host}}/api/cart/items
+X-Client-Id: {{client}}
+Content-Type: application/json
+
+{ "productId": 1, "quantity": 2 }
+
+### Изменить количество
+PUT {{host}}/api/cart/items/1
+X-Client-Id: {{client}}
+Content-Type: application/json
+
+{ "quantity": 3 }
+
+### Оформить заказ
+POST {{host}}/api/orders
+X-Client-Id: {{client}}
+Content-Type: application/json
+
+{
+  "customerName": "Иван Иванов",
+  "phone": "+998 90 123 45 67",
+  "email": "ivan@example.com",
+  "address": "г. Ташкент, ул. Примерная, д. 1",
+  "comment": "Позвонить за час"
+}
+
+### Мои заказы
+GET {{host}}/api/orders
+X-Client-Id: {{client}}
+
+### Отменить заказ
+POST {{host}}/api/orders/1/cancel
+X-Client-Id: {{client}}
+
+### [Админ] все заказы
+GET {{host}}/api/admin/orders
+X-Admin-Key: {{admin}}
+
+### [Админ] сменить статус
+PUT {{host}}/api/admin/orders/1/status
+X-Admin-Key: {{admin}}
+Content-Type: application/json
+
+{ "status": "Processing" }

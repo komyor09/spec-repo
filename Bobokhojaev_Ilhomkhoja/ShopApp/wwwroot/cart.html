@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Корзина — ShopApp</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <header class="header" id="header"></header>
+
+    <main class="container">
+        <h1>Корзина</h1>
+        <div id="cart-root"><div class="loader">Загрузка…</div></div>
+    </main>
+
+    <!-- Шаблон оформления заказа (вставляется в правую колонку) -->
+    <template id="checkout-template">
+        <h2>Оформление заказа</h2>
+        <form id="checkout-form" novalidate>
+            <div class="field">
+                <label for="customerName">Имя и фамилия *</label>
+                <input id="customerName" name="customerName" required minlength="2" maxlength="100" autocomplete="name">
+            </div>
+            <div class="field">
+                <label for="phone">Телефон *</label>
+                <input id="phone" name="phone" type="tel" required placeholder="+998 90 123 45 67" autocomplete="tel">
+            </div>
+            <div class="field">
+                <label for="email">E-mail *</label>
+                <input id="email" name="email" type="email" required autocomplete="email">
+            </div>
+            <div class="field">
+                <label for="address">Адрес доставки *</label>
+                <textarea id="address" name="address" required minlength="5" maxlength="300" autocomplete="street-address"></textarea>
+            </div>
+            <div class="field">
+                <label for="comment">Комментарий к заказу</label>
+                <textarea id="comment" name="comment" maxlength="500"></textarea>
+            </div>
+            <div class="field-error" id="form-error"></div>
+            <button type="submit" class="btn btn-block" id="checkout-btn">Оформить заказ</button>
+        </form>
+    </template>
+
+    <script type="module" src="/js/cart.js"></script>
+</body>
+</html>

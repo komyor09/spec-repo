@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Каталог — ShopApp</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <header class="header" id="header"></header>
+
+    <main class="container">
+        <h1>Каталог товаров</h1>
+
+        <div class="toolbar">
+            <input type="search" id="search" class="search" placeholder="Поиск по названию или описанию…">
+            <select id="sort">
+                <option value="new">Сначала новые</option>
+                <option value="price_asc">Сначала дешёвые</option>
+                <option value="price_desc">Сначала дорогие</option>
+                <option value="name">По названию</option>
+            </select>
+        </div>
+
+        <div class="chips" id="categories"></div>
+
+        <div id="products" class="grid"></div>
+        <div id="pagination" class="pagination"></div>
+    </main>
+
+    <!-- Модальное окно товара -->
+    <div class="modal-backdrop" id="modal" hidden>
+        <div class="modal card" id="modal-body"></div>
+    </div>
+
+    <script type="module" src="/js/catalog.js"></script>
+</body>
+</html>
